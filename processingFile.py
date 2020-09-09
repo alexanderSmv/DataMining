@@ -8,16 +8,17 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.stem import LancasterStemmer
 from collections import  Counter
+import  matplotlib.pyplot as plt
+import  numpy as  np
 
 gensim.parsing.preprocessing.STOPWORDS = {'a', 'the', 'to', 'in'}
 all_stopwords = gensim.parsing.preprocessing.STOPWORDS
 
-list_spam_ham = []
-contentList = []#тут и спам и хам
-
+#['some sentence','else sentence']
 spamList = []
 hamList = []
 
+#{'word':count}
 arrWord_Spam = {}
 arrWord_Ham = {}
 
@@ -43,7 +44,7 @@ def add_and_count(someList,outputArr):
             if not  word in outputArr :
                 outputArr[word] = 1
             else:
-                outputArr[word]+=1
+                outputArr[word] += 1
     return someList
 
 def openFile_fillArrays():
@@ -52,24 +53,25 @@ def openFile_fillArrays():
         i = 1
         for row in reader:
             i += 1
-            #list_spam_ham.append(row['v1'])#В файле набор строк Spam Ham
-            contentList.append(stemSentence(remove_stopwords((re.sub(r'[^a-zA-Z ]', r'', row['v2'])).lower())))# заполняю массив сообщений(общий)
+
+
             if row['v1'] =='spam':
                 spamList.append(stemSentence(remove_stopwords((re.sub(r'[^a-zA-Z ]', r'', row['v2'])).lower())))
             else:
                 hamList.append(stemSentence(remove_stopwords((re.sub(r'[^a-zA-Z ]', r'', row['v2'])).lower())))
             # print(i, '|', row['v1'], '|', stemSentence(remove_stopwords((re.sub(r'[^a-zA-Z ]', r'', row['v2'])).lower())))
 
-        # print('"ham" встречается: ',List_s_h.count('ham'),' раз')
-        # print('"spam" встречается: ', List_s_h.count('spam'), ' раз')
+
     csvfile.close()
 
 openFile_fillArrays()
 add_and_count(spamList, arrWord_Spam)
 add_and_count(hamList, arrWord_Ham)
 
-print(arrWord_Spam)
-print(arrWord_Ham)
+
+
+# print(arrWord_Spam)
+# print(arrWord_Ham)
 
 # Сортировка слов по алфавиту
 # tmp = collections.OrderedDict(sorted(arrWord_Spam.items()))
@@ -88,9 +90,3 @@ def fillHamFile():#дефолтный
 
 fillHamFile()
 fillSpamFile()
-
-# Популярные слова в словаре
-# MostCommonSpamWords = Counter(arrWord_Spam).most_common()
-# MostCommonHamWords = Counter(arrWord_Ham).most_common()
-# print(MostCommonSpamWords)
-# print(MostCommonHamWords)
